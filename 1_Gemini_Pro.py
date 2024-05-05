@@ -12,13 +12,22 @@ st.set_page_config(
     page_icon="🔥",
     menu_items={
         'About': "# Make By Test"
-    },
-    page_background_color="#000000" 
+    }
 )
 
 st.title("Chat To Gemini")
 st.caption("a chatbot, powered by google gemini pro.")
 
+login_key = 'Gemini123'
+
+if "login_key" not in st.session_state:
+    login_key_input = st.text_input("Please enter the login Key", type='password')
+    if login_key_input==login_key:
+        st.session_state.login_key = login_key_input
+         st.write("Password is correct, welcome to the app!")
+    else:
+        st.error("Password is incorrect, access denied.")
+        st.stop()
 
 if "app_key" not in st.session_state:
     app_key = st.text_input("Your Gemini App Key", type='password')
