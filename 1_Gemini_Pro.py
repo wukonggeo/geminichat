@@ -31,13 +31,18 @@ if 'is_authenticated' not in st.session_state or not st.session_state.is_authent
         if password_input == login_key:
             st.session_state.is_authenticated = True
             st.write("Password is correct, welcome to the app!")
+            # 刷新页面，重新加载程序
+            st.experimental_rerun()
         else:
             st.error("Password is incorrect, access denied.")
             # 刷新页面
-            st.experimental_rerun()
+            # st.experimental_rerun()
+            # 清空密码输入框
+            st.session_state.password_input = ""
 
 # 如果用户已通过验证，则显示应用内容
 if st.session_state.is_authenticated:
+    st.experimental_rerun()
     st.title("Chat To Gemini")
     st.caption("a chatbot, powered by google gemini pro.")
     
