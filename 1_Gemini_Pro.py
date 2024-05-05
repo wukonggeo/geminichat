@@ -24,7 +24,7 @@ if 'is_authenticated' not in st.session_state:
 # 检查是否已经登录
 if not st.session_state.is_authenticated: 
     # 要求用户输入密码
-    password_input = st.text_input("Please enter the login Key", type='password')
+    password_input = st.text_input("Please enter the login Key", type='password', key='login_key_input')
     
     # 提交按钮，用于触发密码验证
     if st.button('Submit'):
@@ -38,7 +38,7 @@ if not st.session_state.is_authenticated:
             # 刷新页面
             # st.experimental_rerun()
             # 清除密码输入框的值，以便用户重新输入
-            st.text_input("Please enter the login Key", type='password', value='')
+            st.text_input("Please enter the login Key", type='password', key='login_key_input', value='')
 
 else:
     st.title("Chat To Gemini")
