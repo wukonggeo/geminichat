@@ -38,7 +38,7 @@ if not st.session_state.is_authenticated:
             # 刷新页面
             # st.experimental_rerun()
             # 清除密码输入框的值，以便用户重新输入
-            st.text_input("Please enter the login Key", type='password', key='login_key_input', value='')
+            st.text_input("Please enter the login Key", type='password', key=f'login_key_input_{random.randint(0, 1000)}', value='')
 
 else:
     st.title("Chat To Gemini")
