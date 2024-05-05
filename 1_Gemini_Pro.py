@@ -17,6 +17,10 @@ st.set_page_config(
 
 login_key = 'Gemini123'
 
+# 初始化参数
+if 'is_authenticated' not in st.session_state:
+    st.session_state.is_authenticated = False
+
 # 检查是否已经登录
 if 'is_authenticated' not in st.session_state or not st.session_state.is_authenticated: 
     # 要求用户输入密码
