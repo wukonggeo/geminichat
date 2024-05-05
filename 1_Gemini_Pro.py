@@ -24,7 +24,7 @@ if "login_key" not in st.session_state:
     login_key_input = st.text_input("Please enter the login Key", type='password')
     if login_key_input==login_key:
         st.session_state.login_key = login_key_input
-         st.write("Password is correct, welcome to the app!")
+        st.write("Password is correct, welcome to the app!")
     else:
         st.error("Password is incorrect, access denied.")
         st.stop()
