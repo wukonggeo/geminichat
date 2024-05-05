@@ -8,14 +8,15 @@ from utils import SAFETY_SETTTINGS
 
 
 st.set_page_config(
-    page_title="Chat To XYthing",
+    page_title="Chat To Gemini",
     page_icon="🔥",
     menu_items={
-        'About': "# Make By hiliuxg"
-    }
+        'About': "# Make By Test"
+    },
+    page_background_color="#000000" 
 )
 
-st.title("Chat To XYthing")
+st.title("Chat To Gemini")
 st.caption("a chatbot, powered by google gemini pro.")
 
 
