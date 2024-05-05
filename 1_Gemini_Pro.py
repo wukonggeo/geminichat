@@ -22,7 +22,7 @@ if 'is_authenticated' not in st.session_state:
     st.session_state.is_authenticated = False
 
 # 检查是否已经登录
-if 'is_authenticated' not in st.session_state or not st.session_state.is_authenticated: 
+if not st.session_state.is_authenticated: 
     # 要求用户输入密码
     password_input = st.text_input("Please enter the login Key", type='password')
     
@@ -39,10 +39,9 @@ if 'is_authenticated' not in st.session_state or not st.session_state.is_authent
             # st.experimental_rerun()
             # 清空密码输入框
             st.session_state.password_input = ""
-
-# 如果用户已通过验证，则显示应用内容
-if st.session_state.is_authenticated:
-    st.experimental_rerun()
+            # 重新显示输入提示
+            st.text_input("Please enter the login Key", type='password')
+else:
     st.title("Chat To Gemini")
     st.caption("a chatbot, powered by google gemini pro.")
     
