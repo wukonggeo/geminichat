@@ -24,7 +24,7 @@ if 'is_authenticated' not in st.session_state:
 # 检查是否已经登录
 if not st.session_state.is_authenticated: 
     # 要求用户输入密码
-    password_input = st.text_input("Please enter the login Key", type='password', key='password_input)
+    password_input = st.text_input("Please enter the login Key", type='password', key='password_input')
     
     # 提交按钮，用于触发密码验证
     if st.button('Submit'):
