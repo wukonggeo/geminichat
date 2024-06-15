@@ -22,7 +22,8 @@ if "app_key" not in st.session_state:
 
 try:
     genai.configure(api_key = st.session_state.app_key)
-    model = genai.GenerativeModel('gemini-pro-vision')
+    # gemini-pro-vision
+    model = genai.GenerativeModel('gemini-1.5-flash')
 except AttributeError as e:
     st.warning("Please Put Your Gemini App Key First.")
 
