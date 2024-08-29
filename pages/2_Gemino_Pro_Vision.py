@@ -9,7 +9,7 @@ st.set_page_config(
     page_title="Chat To XYthing",
     page_icon="🔥",
     menu_items={
-        'About': "# Make by hiliuxg"
+        'About': "# Test Demo"
     }
 )
 
