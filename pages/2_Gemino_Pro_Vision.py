@@ -28,13 +28,14 @@ except AttributeError as e:
     st.warning("Please Put Your Gemini App Key First.")
 
 
-def show_message(prompt, image, loading_str):
+def show_message(prompt, loading_str):
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
         message_placeholder.markdown(loading_str)
         full_response = ""
         try:
-            for chunk in model.generate_content([prompt, image], stream = True, safety_settings = SAFETY_SETTTINGS):                   
+            # for chunk in model.generate_content([prompt, image], stream = True, safety_settings = SAFETY_SETTTINGS):
+            for chunk in model.generate_content(prompt, stream = True, safety_settings = SAFETY_SETTTINGS):                   
                 word_count = 0
                 random_int = random.randint(5, 10)
                 for word in chunk.text:
@@ -75,13 +76,13 @@ if len(st.session_state.history_pic) > 0:
             st.markdown(item["text"])
 
 if "app_key" in st.session_state:
-    if prompt := st.chat_input("desc this picture"):
-        if image is None:
-            st.warning("Please upload an image first", icon="⚠️")
-        else:
-            prompt = prompt.replace('\n', '  \n')
-            with st.chat_message("user"):
-                st.markdown(prompt)
-                st.session_state.history_pic.append({"role": "user", "text": prompt})
-            
-            show_message(prompt, resized_img, "Thinking...")
+    if prompt := st.chat_input("输入问题"):
+        # if image is None:
+        #     st.warning("Please upload an image first", icon="⚠️")
+        # else:
+        prompt = prompt.replace('\n', '  \n')
+        with st.chat_message("user"):
+            st.markdown(prompt)
+            st.session_state.history_pic.append({"role": "user", "text": prompt})
+        show_message(prompt, "Thinking...")
+            # show_message(prompt, resized_img, "Thinking...")
