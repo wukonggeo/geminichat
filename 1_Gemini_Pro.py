@@ -83,6 +83,8 @@ else:
                 try:
                     full_response = ""
                     for chunk in chat.send_message(prompt, stream=True, safety_settings = SAFETY_SETTTINGS):
+                        # 增加等待时间，减少报错
+                        time.sleep(0.3)
                         word_count = 0
                         random_int = random.randint(5, 10)
                         for word in chunk.text:
