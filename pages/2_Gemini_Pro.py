@@ -28,15 +28,15 @@ except AttributeError as e:
     st.warning("Please Put Your Gemini App Key First.")
 
 
-def show_message(prompt, loading_str, image_bytes=None):
+def show_message(prompt, loading_str, image=None):
     model_chat = model.start_chat(history = st.session_state.history_pic)
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
         message_placeholder.markdown(loading_str)
         full_response = ""
         try:
-            if image_bytes:
-                prompt = [prompt, image_bytes]
+            if image:
+                prompt = [prompt, image]
             for chunk in model_chat.send_message(prompt, stream = True, safety_settings = SAFETY_SETTTINGS):                   
                 word_count = 0
                 random_int = random.randint(10, 20)
@@ -85,10 +85,10 @@ for message in st.session_state.history_pic:
 if "app_key" in st.session_state:
     if prompt := st.chat_input("输入问题"):
         if image is None:
-            image_bytes = None
+            pass
         #     st.warning("Please upload an image first", icon="⚠️")
         prompt = prompt.replace('\n', '  \n')
         with st.chat_message("user"):
             st.markdown(prompt)
-        show_message(prompt, "Thinking...", image_bytes)
+        show_message(prompt, "Thinking...", image)
             # show_message(prompt, image, "Thinking...")
