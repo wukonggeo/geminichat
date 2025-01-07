@@ -29,13 +29,14 @@ except AttributeError as e:
 
 
 def show_message(prompt, loading_str):
+    model_chat = model.start_chat(history = st.session_state.history_pic)
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
         message_placeholder.markdown(loading_str)
         full_response = ""
         try:
             # for chunk in model.generate_content([prompt, image], stream = True, safety_settings = SAFETY_SETTTINGS):
-            for chunk in model.generate_content(prompt, stream = True, safety_settings = SAFETY_SETTTINGS):                   
+            for chunk in model_chat.send_message(prompt, stream = True, safety_settings = SAFETY_SETTTINGS):                   
                 word_count = 0
                 random_int = random.randint(5, 10)
                 for word in chunk.text:
