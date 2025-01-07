@@ -28,7 +28,7 @@ except AttributeError as e:
     st.warning("Please Put Your Gemini App Key First.")
 
 
-def show_message(prompt, loading_str, image=None):
+def show_message(prompt, loading_str, image_bytes=None):
     model_chat = model.start_chat(history = st.session_state.history_pic)
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
@@ -38,7 +38,7 @@ def show_message(prompt, loading_str, image=None):
             # for chunk in model.generate_content([prompt, image], stream = True, safety_settings = SAFETY_SETTTINGS):
             for chunk in model_chat.send_message(prompt, stream = True, safety_settings = SAFETY_SETTTINGS):                   
                 word_count = 0
-                random_int = random.randint(5, 10)
+                random_int = random.randint(10, 20)
                 for word in chunk.text:
                     full_response += word
                     word_count += 1
@@ -46,16 +46,12 @@ def show_message(prompt, loading_str, image=None):
                         time.sleep(0.05)
                         message_placeholder.markdown(full_response + "_")
                         word_count = 0
-                        random_int = random.randint(5, 10)
+                        random_int = random.randint(10, 20)
         except genai.types.generation_types.BlockedPromptException as e:
             st.exception(e)
         except Exception as e:
             st.exception(e)
         message_placeholder.markdown(full_response)
-        # 添加图片到历史记录
-        assistant_message_parts = [{"text": full_response or ""}]
-        if image:
-            assistant_message_parts.append({"image": {"bytes": image}})
         st.session_state.history_pic = model_chat.history
 
 def clear_state():
@@ -75,14 +71,14 @@ if "app_key" in st.session_state:
         resized_img = image.resize((128, int(height/(width/128))), Image.LANCZOS)
         st.image(resized_img)    
 
-if len(st.session_state.history_pic) > 0:
-    for item in st.session_state.history_pic:
-        with st.chat_message(item["role"]):
-            for part in item.get("parts", []):
-                if "text" in part:
-                    st.markdown(part["text"])
-                elif "image" in part:
-                    st.image(part["image"].get("bytes")) 
+for message in st.session_state.history_pic:
+      role = "assistant" if message.role == "model" else message.role
+      with st.chat_message(role):
+            for part in message.parts:
+                  if part.text:
+                      st.markdown(part.text)
+                  elif part.image:
+                      st.image(part.image.bytes)
 
 if "app_key" in st.session_state:
     if prompt := st.chat_input("输入问题"):
@@ -92,6 +88,5 @@ if "app_key" in st.session_state:
         prompt = prompt.replace('\n', '  \n')
         with st.chat_message("user"):
             st.markdown(prompt)
-            st.session_state.history_pic.append({"role": "user", "text": prompt})
         show_message(prompt, "Thinking...")
             # show_message(prompt, resized_img, "Thinking...")
