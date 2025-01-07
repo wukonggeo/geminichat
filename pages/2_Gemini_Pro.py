@@ -28,7 +28,7 @@ except AttributeError as e:
     st.warning("Please Put Your Gemini App Key First.")
 
 
-def show_message(prompt, loading_str):
+def show_message(prompt, loading_str, image=None):
     model_chat = model.start_chat(history = st.session_state.history_pic)
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
@@ -52,7 +52,11 @@ def show_message(prompt, loading_str):
         except Exception as e:
             st.exception(e)
         message_placeholder.markdown(full_response)
-        st.session_state.history_pic.append({"role": "assistant", "text": full_response})
+        # 添加图片到历史记录
+        assistant_message_parts = [{"text": full_response or ""}]
+        if image:
+            assistant_message_parts.append({"image": {"bytes": image}})
+        st.session_state.history_pic = model_chat.history
 
 def clear_state():
     st.session_state.history_pic = []
@@ -74,7 +78,11 @@ if "app_key" in st.session_state:
 if len(st.session_state.history_pic) > 0:
     for item in st.session_state.history_pic:
         with st.chat_message(item["role"]):
-            st.markdown(item["text"])
+            for part in item.get("parts", []):
+                if "text" in part:
+                    st.markdown(part["text"])
+                elif "image" in part:
+                    st.image(part["image"].get("bytes")) 
 
 if "app_key" in st.session_state:
     if prompt := st.chat_input("输入问题"):
