@@ -35,7 +35,8 @@ def show_message(prompt, loading_str, image_bytes=None):
         message_placeholder.markdown(loading_str)
         full_response = ""
         try:
-            # for chunk in model.generate_content([prompt, image], stream = True, safety_settings = SAFETY_SETTTINGS):
+            if image_bytes:
+                prompt = [prompt, image_bytes]
             for chunk in model_chat.send_message(prompt, stream = True, safety_settings = SAFETY_SETTTINGS):                   
                 word_count = 0
                 random_int = random.randint(10, 20)
@@ -67,6 +68,7 @@ if "app_key" in st.session_state:
     uploaded_file = st.file_uploader("choose a pic...", type=["jpg", "png", "jpeg", "gif"], label_visibility='collapsed', on_change = clear_state)
     if uploaded_file is not None:
         image = Image.open(uploaded_file).convert('RGB')
+        image_bytes = image.tobytes()
         width, height = image.size
         resized_img = image.resize((128, int(height/(width/128))), Image.LANCZOS)
         st.image(resized_img)    
@@ -82,11 +84,11 @@ for message in st.session_state.history_pic:
 
 if "app_key" in st.session_state:
     if prompt := st.chat_input("输入问题"):
-        # if image is None:
+        if image is None:
+            image_bytes = None
         #     st.warning("Please upload an image first", icon="⚠️")
-        # else:
         prompt = prompt.replace('\n', '  \n')
         with st.chat_message("user"):
             st.markdown(prompt)
-        show_message(prompt, "Thinking...")
-            # show_message(prompt, resized_img, "Thinking...")
+        show_message(prompt, "Thinking...", image_bytes)
+            # show_message(prompt, image, "Thinking...")
