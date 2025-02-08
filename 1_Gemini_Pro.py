@@ -57,8 +57,8 @@ else:
         genai.configure(api_key = st.session_state.app_key)
     except AttributeError as e:
         st.warning("Please Put Your Gemini App Key First.")
-    # gemini-1.5-pro-002
-    model = genai.GenerativeModel('gemini-1.5-pro-latest')
+    # gemini-1.5-pro-latest
+    model = genai.GenerativeModel('gemini-2.0-pro-exp-0205')
     chat = model.start_chat(history = st.session_state.history)
     
     with st.sidebar:
