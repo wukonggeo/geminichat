@@ -80,7 +80,8 @@ else:
                 message_placeholder.markdown("Thinking...")
                 try:
                     full_response = ""
-                    for chunk in chat.send_message(prompt, stream=True, safety_settings = SAFETY_SETTTINGS):
+                    # safety_settings = SAFETY_SETTTINGS
+                    for chunk in chat.send_message(prompt, stream=True):
                         # 增加等待时间，减少报错
                         time.sleep(0.3)
                         word_count = 0
