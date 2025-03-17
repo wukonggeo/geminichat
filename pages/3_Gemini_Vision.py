@@ -58,18 +58,13 @@ def show_message(prompt, image, loading_str):
                             try:
                                 output_file = f"genai_image_{image_count}.{mime_type.split('/')[-1]}"
                                 st.image(image_data, caption=f"Generated Image {output_file}", use_column_width=True)
-                                mage_counter += 1
+                                image_count += 1
                             except Exception as e:
                                 st.error(f"Error displaying image: {e}")
                     elif part.text:
                         for word in part.text:
                             full_response += word
-                            word_count += 1
-                            if word_count == random_int:
-                                time.sleep(0.05)
-                                message_placeholder.markdown(full_response + "_")
-                                word_count = 0
-                                random_int = random.randint(5, 10)
+                            message_placeholder.markdown(full_response + "_")
         except Exception as e:
             st.exception(e)
         message_placeholder.markdown(full_response)
