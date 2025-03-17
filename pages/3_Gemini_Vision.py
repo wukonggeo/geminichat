@@ -42,8 +42,11 @@ def convert_history_model(history_list):
             if "text" in message:
                 content = message["text"]
             elif "image" in message:
-                content = message["image"]
-            data_dict[role] = message
+                content = {
+                    "mime_type": "image/png",
+                    "data": message["image"]
+                }
+            data_dict[role] = content
             model_history.append(data_dict)
     retrun model_history
     
