@@ -44,11 +44,11 @@ def convert_history_model(history_list):
             elif "image" in message:
                 content = {
                     "mime_type": "image/png",
-                    "data": message["image"]
+                    "data": message["image"],
                 }
             data_dict[role] = content
             model_history.append(data_dict)
-    retrun model_history
+    return model_history
     
 
 def show_message(prompt, image, loading_str):
