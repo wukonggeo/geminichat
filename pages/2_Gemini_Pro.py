@@ -28,7 +28,7 @@ if "app_key" not in st.session_state:
 
 with st.sidebar:
     if st.button("Clear Chat Window", use_container_width = True, type="primary"):
-        st.session_state.history = []
+        st.session_state.history_pic  = []
         st.rerun()
     selected_model = st.selectbox(
         "Select Model",
