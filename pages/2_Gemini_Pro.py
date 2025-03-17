@@ -38,7 +38,6 @@ with st.sidebar:
         )
 try:
     genai.configure(api_key = st.session_state.app_key)
-    selected_model = st.selectbox("Select Gemini Model", options=list(model_options.keys()), format_func=lambda x: model_options[x])
     # gemini-1.5-flash gemini-2.0-flash
     model = genai.GenerativeModel(selected_model)
 except AttributeError as e:
