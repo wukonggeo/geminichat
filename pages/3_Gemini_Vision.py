@@ -72,25 +72,23 @@ def show_message(prompt, image, loading_str):
                     continue
                 for part in chunk.candidates[0].content.parts:
                     if part.inline_data:
-                        for part in chunk.candidates[0].content.parts:
-                            image_data = part.inline_data.data
-                            mime_type = part.inline_data.mime_type
-                            try:
-                                output_file = f"genai_image_{image_count}.{mime_type.split('/')[-1]}"
-                                st.image(image_data, caption=f"Generated Image {output_file}", use_column_width=True)
-                                image_count += 1
-                            except Exception as e:
-                                st.error(f"Error displaying image: {e}")
+                        image_data = part.inline_data.data
+                        mime_type = part.inline_data.mime_type
+                        try:
+                            output_file = f"genai_image_{image_count}.{mime_type.split('/')[-1]}"
+                            st.image(image_data, caption=f"Generated Image {output_file}", use_column_width=True)
+                            image_count += 1
+                        except Exception as e:
+                            st.error(f"Error displaying image: {e}")
                     elif part.text:
-                        for word in part.text:
-                            full_response += word
-                            message_placeholder.markdown(full_response + "_")
+                        full_response += part.text
+                        message_placeholder.markdown(full_response + "_")
         except Exception as e:
             st.exception(e)
         message_placeholder.markdown(full_response)
-        st.session_state.history_pic.append({"role": "assistant", "text": full_response})
         st.session_state.history_pic.append({"role": "assistant", "image": image_data})
-
+        st.session_state.history_pic.append({"role": "assistant", "text": full_response})
+        
 
 def clear_state():
     st.session_state.history_pic = []
