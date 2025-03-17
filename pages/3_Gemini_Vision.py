@@ -115,7 +115,7 @@ if len(st.session_state.history_pic) > 0:
             if item["text"]:
                 st.markdown(item["text"])
             elif item["image"]:
-                st.image(image_data, caption=f"Generated Image", use_column_width=True)
+                st.image(item["image"], caption=f"Generated Image", use_column_width=True)
 
 if "app_key" in st.session_state:
     if prompt := st.chat_input("请输入问题"):
