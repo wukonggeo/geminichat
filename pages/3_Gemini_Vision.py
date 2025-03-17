@@ -1,9 +1,10 @@
-from PIL import Image
-import google.generativeai as genai
-import streamlit as st
 import time
 import random
-from utils import SAFETY_SETTTINGS
+import streamlit as st
+
+from PIL import Image
+from google import genai
+from google.genai import types
 
 st.set_page_config(
     page_title="Chat To XYthing",
@@ -12,7 +13,6 @@ st.set_page_config(
         'About': "# Test Demo"
     }
 )
-
 st.title('Upload Image And Ask')
 
 if "app_key" not in st.session_state:
@@ -21,32 +21,54 @@ if "app_key" not in st.session_state:
         st.session_state.app_key = app_key
 
 try:
-    genai.configure(api_key = st.session_state.app_key)
     # gemini-pro-vision
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    client = genai.Client(api_key = st.session_state.app_key)
+    config = types.GenerateContentConfig(
+        temperature=1,
+        top_p=.95,
+        top_k=40,
+        response_modalities=["Text", "Image"]
+    )
 except AttributeError as e:
     st.warning("Please Put Your Gemini App Key First.")
 
 
 def show_message(prompt, image, loading_str):
+    response_stream = client.models.generate_content_stream(
+        model="gemini-2.0-flash-exp",
+        contents=prompt,
+        config=config,
+    )
+    image_count = 0
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
         message_placeholder.markdown(loading_str)
         full_response = ""
         try:
-            for chunk in model.generate_content([prompt, image], stream = True, safety_settings = SAFETY_SETTTINGS):
+            for chunk in response_stream:
                 word_count = 0
-                random_int = random.randint(5, 10)
-                for word in chunk.text:
-                    full_response += word
-                    word_count += 1
-                    if word_count == random_int:
-                        time.sleep(0.05)
-                        message_placeholder.markdown(full_response + "_")
-                        word_count = 0
-                        random_int = random.randint(5, 10)
-        except genai.types.generation_types.BlockedPromptException as e:
-            st.exception(e)
+                random_int = random.randint(10, 20)
+                if not chunk.candidates or not chunk.candidates[0].content or not chunk.candidates[0].content.parts:
+                    continue
+                if part.inline_data:
+                    for part in chunk.candidates[0].content.parts:
+                        image_data = part.inline_data.data
+                        mime_type = part.inline_data.mime_type
+                        try:
+                            output_file = f"genai_image_{image_count}.{mime_type.split('/')[-1]}"
+                            st.image(image_data, caption=f"Generated Image {output_file}", use_column_width=True)
+                            mage_counter += 1
+                        except Exception as e:
+                            st.error(f"Error displaying image: {e}")
+                elif part.text:
+                    for word in part.text:
+                        full_response += word
+                        word_count += 1
+                        if word_count == random_int:
+                            time.sleep(0.05)
+                            message_placeholder.markdown(full_response + "_")
+                            word_count = 0
+                            random_int = random.randint(5, 10)
         except Exception as e:
             st.exception(e)
         message_placeholder.markdown(full_response)
@@ -77,10 +99,9 @@ if len(st.session_state.history_pic) > 0:
 if "app_key" in st.session_state:
     if prompt := st.chat_input("请输入问题"):
         if image is None:
-            st.warning("您必须上传一张图片", icon="⚠️")
-        else:
-            prompt = prompt.replace('\n', '  \n')
-            with st.chat_message("user"):
-                st.markdown(prompt)
-                st.session_state.history_pic.append({"role": "user", "text": prompt})
-            show_message(prompt, resized_img, "Thinking...")
+            pass
+        prompt = prompt.replace('\n', '  \n')
+        with st.chat_message("user"):
+            st.markdown(prompt)
+            st.session_state.history_pic.append({"role": "user", "text": prompt})
+        show_message(prompt, image, "Thinking...")
