@@ -86,7 +86,8 @@ def show_message(prompt, image, loading_str):
         except Exception as e:
             st.exception(e)
         message_placeholder.markdown(full_response)
-        st.session_state.history_pic.append({"role": "assistant", "image": image_data})
+        if image_data: 
+            st.session_state.history_pic.append({"role": "assistant", "image": image_data})
         st.session_state.history_pic.append({"role": "assistant", "text": full_response})
         
 
@@ -110,9 +111,9 @@ if "app_key" in st.session_state:
 if len(st.session_state.history_pic) > 0:
     for item in st.session_state.history_pic:
         with st.chat_message(item["role"]):
-            if item["text"]:
+            if "text" in item and item["text"]:
                 st.markdown(item["text"])
-            elif item["image"]:
+            if "image" in item and item["image"]: :
                 st.image(item["image"], caption=f"Generated Image", use_column_width=True)
 
 if "app_key" in st.session_state:
