@@ -12,18 +12,35 @@ st.set_page_config(
         'About': "# Test Demo"
     }
 )
-
 st.title('Upload Image And Ask')
+model_options = {
+    'gemini-2.0-pro-exp-02-05': "Pro",
+    'gemini-2.0-flash': "Flash",
+    'gemini-2.0-flash-thinking-exp-01-21': "Think",
+    'gemini-2.0-flash-exp': "Vison",
+    }
+default_index = list(model_options.keys()).index('gemini-2.0-flash')
 
 if "app_key" not in st.session_state:
     app_key = st.text_input("Your Gemini App Key", type='password')
     if app_key:
         st.session_state.app_key = app_key
 
+with st.sidebar:
+    if st.button("Clear Chat Window", use_container_width = True, type="primary"):
+        st.session_state.history = []
+        st.rerun()
+    selected_model = st.selectbox(
+        "Select Model",
+        options=list(model_options.keys()),
+        format_func=lambda x: model_options[x],  #显示的名称
+        index=default_index
+        )
 try:
     genai.configure(api_key = st.session_state.app_key)
-    # gemini-1.5-flash
-    model = genai.GenerativeModel('gemini-2.0-flash')
+    selected_model = st.selectbox("Select Gemini Model", options=list(model_options.keys()), format_func=lambda x: model_options[x])
+    # gemini-1.5-flash gemini-2.0-flash
+    model = genai.GenerativeModel(selected_model)
 except AttributeError as e:
     st.warning("Please Put Your Gemini App Key First.")
 
