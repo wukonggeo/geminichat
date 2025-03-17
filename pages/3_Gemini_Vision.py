@@ -33,6 +33,21 @@ except AttributeError as e:
     st.warning("Please Put Your Gemini App Key First.")
 
 
+def convert_history_model(history_list):
+    model_history = []
+    if len(st.session_state.history_pic) > 0:
+        for message in st.session_state.history_pic:
+            data_dict = {}
+            role = "model" if message.role == "assistant" else message.role
+            if "text" in message:
+                content = message["text"]
+            elif "image" in message:
+                content = message["image"]
+            data_dict[role] = message
+            model_history.append(data_dict)
+    retrun model_history
+    
+
 def show_message(prompt, image, loading_str):
     if image:
         prompt = [prompt, image]
@@ -72,6 +87,8 @@ def show_message(prompt, image, loading_str):
         message_placeholder.markdown(full_response)
         st.session_state.history_pic.append({"role": "assistant", "text": full_response})
         st.session_state.history_pic.append({"role": "assistant", "image": image_data})
+
+
 def clear_state():
     st.session_state.history_pic = []
 
