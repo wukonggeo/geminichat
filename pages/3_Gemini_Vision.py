@@ -34,6 +34,8 @@ except AttributeError as e:
 
 
 def show_message(prompt, image, loading_str):
+    if image:
+        prompt = [prompt, image]
     response_stream = client.models.generate_content_stream(
         model="gemini-2.0-flash-exp",
         contents=prompt,
@@ -69,7 +71,7 @@ def show_message(prompt, image, loading_str):
             st.exception(e)
         message_placeholder.markdown(full_response)
         st.session_state.history_pic.append({"role": "assistant", "text": full_response})
-
+        st.session_state.history_pic.append({"role": "assistant", "image": image_data})
 def clear_state():
     st.session_state.history_pic = []
 
@@ -90,7 +92,10 @@ if "app_key" in st.session_state:
 if len(st.session_state.history_pic) > 0:
     for item in st.session_state.history_pic:
         with st.chat_message(item["role"]):
-            st.markdown(item["text"])
+            if item["text"]:
+                st.markdown(item["text"])
+            elif item["image"]:
+                st.image(image_data, caption=f"Generated Image", use_column_width=True)
 
 if "app_key" in st.session_state:
     if prompt := st.chat_input("请输入问题"):
