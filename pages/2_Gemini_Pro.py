@@ -16,8 +16,9 @@ st.title('Upload Image And Ask')
 model_options = {
     'gemini-2.0-pro-exp-02-05': "Pro",
     'gemini-2.0-flash': "Flash",
-    'gemini-2.0-flash-thinking-exp-01-21': "Think",
     'gemini-2.0-flash-exp': "Vison",
+    'gemini-2.0-flash-thinking-exp-01-21': "Think",
+    "gemini-2.5-pro-exp-03-25":"Think-PRO"
     }
 default_index = list(model_options.keys()).index('gemini-2.0-flash')
 
