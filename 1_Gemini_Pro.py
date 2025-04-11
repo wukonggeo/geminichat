@@ -30,7 +30,7 @@ if not st.session_state.is_authenticated:
             st.session_state.is_authenticated = True
             st.write("Password is correct, welcome to the app!")
             # 刷新页面，重新加载程序
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.error("Password is incorrect, access denied.")
             # 刷新页面
