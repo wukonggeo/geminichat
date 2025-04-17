@@ -23,9 +23,6 @@ if 'history' not in st.session_state:
 if 'app_key' not in st.session_state:
     st.session_state.app_key = None
 
-def set_app_key():
-    st.session_state['app_key'] = st.session_state['gemini_key_input']
-
 # 检查是否已经登录
 if not st.session_state.is_authenticated: 
     # 要求用户输入密码
