@@ -23,7 +23,6 @@ model_options = {
 default_index = list(model_options.keys()).index('gemini-2.0-flash')
 
 # 初始化状态信息
-
 if "history_pic" not in st.session_state:
     st.session_state.history_pic = []
 if "app_key" not in st.session_state:
