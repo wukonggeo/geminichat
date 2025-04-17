@@ -59,14 +59,14 @@ def show_message(prompt, image, loading_str):
         contents=prompt,
         config=config,
     )
-    # 初始化变量
-    image_count = 0
-    full_response = "" 
-    image_data = None
+    # 开启对话
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
         message_placeholder.markdown(loading_str)
-        full_response = ""
+        # 初始化变量
+        image_count = 0
+        full_response = "" 
+        image_data = None
         try:
             for chunk in response_stream:
                 word_count = 0
