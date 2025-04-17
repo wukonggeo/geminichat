@@ -117,11 +117,13 @@ if "app_key" in st.session_state:
 
 if len(st.session_state.history_pic) > 0:
     for item in st.session_state.history_pic:
+        image_count = 0
         with st.chat_message(item["role"]):
             if "text" in item and item["text"]:
                 st.markdown(item["text"])
             if "image" in item and item["image"]:
-                st.image(item["image"], caption=f"Generated Image", use_column_width=True)
+                st.image(item["image"], caption=f"Generated Image_{image_count}", use_column_width=True)
+                image_count += 1
 
 if "app_key" in st.session_state:
     if prompt := st.chat_input("请输入问题"):
