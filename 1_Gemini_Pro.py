@@ -22,7 +22,10 @@ if 'history' not in st.session_state:
     st.session_state.history = []
 if 'app_key' not in st.session_state:
     st.session_state.app_key = None
-    
+
+def set_app_key():
+    st.session_state['app_key'] = st.session_state['gemini_key_input']
+
 # 检查是否已经登录
 if not st.session_state.is_authenticated: 
     # 要求用户输入密码
@@ -47,7 +50,7 @@ else:
     st.caption("a chatbot, powered by google gemini pro.")
     
     if "app_key" not in st.session_state or st.session_state.app_key is None:
-        app_key = st.text_input("Your Gemini App Key", type='password')
+        app_key = st.text_input("Your Gemini App Key", type='password', key='gemini_key_input')
         # app_key = st.secrets["Gemini_Key"]
         if app_key:
             st.session_state.app_key = app_key
