@@ -23,7 +23,7 @@ model_options = {
 default_index = list(model_options.keys()).index('gemini-2.0-flash')
 
 if "app_key" not in st.session_state:
-    app_key = st.text_input("Your Gemini App Key", type='password')
+    app_key = st.text_input("Your Gemini App Key", type='password', key="gemini_key_input")
     if app_key:
         st.session_state.app_key = app_key
 
@@ -54,7 +54,7 @@ def show_message(prompt, loading_str, image=None):
         try:
             if image:
                 prompt = [prompt, image]
-            for chunk in model_chat.send_message(prompt, stream = True, safety_settings = SAFETY_SETTTINGS):                   
+            for chunk in model_chat.send_message(prompt, stream = True):                   
                 word_count = 0
                 random_int = random.randint(10, 20)
                 for word in chunk.text:
