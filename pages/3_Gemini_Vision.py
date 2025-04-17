@@ -59,7 +59,10 @@ def show_message(prompt, image, loading_str):
         contents=prompt,
         config=config,
     )
+    # 初始化变量
     image_count = 0
+    full_response = "" 
+    image_data = None
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
         message_placeholder.markdown(loading_str)
