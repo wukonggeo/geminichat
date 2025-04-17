@@ -18,7 +18,11 @@ login_key = 'Gemini123'
 # 初始化参数
 if 'is_authenticated' not in st.session_state:
     st.session_state.is_authenticated = False
-
+if 'history' not in st.session_state:
+    st.session_state.history = []
+if 'app_key' not in st.session_state:
+    st.session_state.app_key = None
+    
 # 检查是否已经登录
 if not st.session_state.is_authenticated: 
     # 要求用户输入密码
@@ -42,15 +46,13 @@ else:
     st.title("Chat To Gemini")
     st.caption("a chatbot, powered by google gemini pro.")
     
-    if "app_key" not in st.session_state:
+    if "app_key" not in st.session_state or st.session_state.app_key is None:
         app_key = st.text_input("Your Gemini App Key", type='password')
         # app_key = st.secrets["Gemini_Key"]
         if app_key:
             st.session_state.app_key = app_key
-    
-    if "history" not in st.session_state:
-        st.session_state.history = []
-    
+    else:
+        st.session_state.app_key = app_key
     try:
         genai.configure(api_key = st.session_state.app_key)
     except AttributeError as e:
