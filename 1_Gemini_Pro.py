@@ -51,8 +51,6 @@ else:
         # app_key = st.secrets["Gemini_Key"]
         if app_key:
             st.session_state.app_key = app_key
-    else:
-        st.session_state.app_key = app_key
     try:
         genai.configure(api_key = st.session_state.app_key)
     except AttributeError as e:
