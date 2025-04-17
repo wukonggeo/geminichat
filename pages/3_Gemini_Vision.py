@@ -74,12 +74,14 @@ def show_message(prompt, image, loading_str):
                     if part.inline_data:
                         image_data = part.inline_data.data
                         mime_type = part.inline_data.mime_type
-                        try:
-                            output_file = f"genai_image_{image_count}.{mime_type.split('/')[-1]}"
-                            st.image(image_data, caption=f"Generated Image {output_file}", use_column_width=True)
-                            image_count += 1
-                        except Exception as e:
-                            st.error(f"Error displaying image: {e}")
+                        # 检查 image_data 是否为空或为 None
+                        if image_data:
+                            try:
+                                output_file = f"genai_image_{image_count}.{mime_type.split('/')[-1]}"
+                                st.image(image_data, caption=f"Generated Image {output_file}", use_column_width=True)
+                                image_count += 1
+                            except Exception as e:
+                                st.error(f"Error displaying image: {e}")
                     elif part.text:
                         full_response += part.text
                         message_placeholder.markdown(full_response + "_")
