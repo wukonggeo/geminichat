@@ -92,9 +92,11 @@ def show_message(prompt, image, loading_str):
             st.exception(e)
         message_placeholder.markdown(full_response)
         if image_data:
-            st.session_state.history_pic.append({"role": "assistant", "image": image_data})
-        st.session_state.history_pic.append({"role": "assistant", "text": full_response})
-        
+            st.session_state.history_pic.append({"role": "assistant", "text": full_response, "image": image_data})
+        else:
+             #只保存文本，图像设置为None
+            st.session_state.history_pic.append({"role": "assistant", "text": full_response, "image": None})
+
 
 def clear_state():
     st.session_state.history_pic = []
