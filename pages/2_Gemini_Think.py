@@ -85,7 +85,7 @@ def show_message(prompt, loading_str, image=None):
         st.session_state.history_pic = model_chat.history
 
 image = None
-if "app_key" in st.session_state:
+if "app_key" in st.session_state and st.session_state.app_key is not None:
     uploaded_file = st.file_uploader("choose a pic...", type=["jpg", "png", "jpeg", "gif"], label_visibility='collapsed', on_change = clear_state)
     if uploaded_file is not None:
         image = Image.open(uploaded_file).convert('RGB')
