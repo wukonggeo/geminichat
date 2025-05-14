@@ -19,7 +19,7 @@ model_options = {
     'gemini-2.0-flash-exp': "Vison",
     'gemini-2.0-flash-thinking-exp-01-21': "Think-Flash",
     'gemini-2.5-flash-preview-04-17': "Think-Flash-new",
-    "gemini-2.5-pro-preview-05-06":"Think-PRO"
+    "gemini-2.5-pro-exp-03-25":"Think-PRO"
     }
 default_index = list(model_options.keys()).index('gemini-2.0-flash')
 
