@@ -66,6 +66,7 @@ def convert_history_model(history_list):
 def convert_history_gemini():
     model_history = []
     if len(st.session_state.history_pic) > 0:
+        print(st.session_state.history_pic)
         for message in st.session_state.history_pic:
             if "text" in message:
                 content = message["text"]
