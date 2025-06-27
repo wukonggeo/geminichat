@@ -68,12 +68,11 @@ def convert_history_gemini():
     if len(st.session_state.history_pic) > 0:
         print(st.session_state.history_pic)
         for message in st.session_state.history_pic:
-            if "text" in message:
-                content = message["text"]
-                if message.role == "assistant":
-                    data = types.Content(role='model',parts=[types.Part.from_text(text=content)],)
-                else:
-                    data = types.Content(role='user',parts=[types.Part.from_text(text=content)],)
+            content = message["text"]
+            if message['role'] == "assistant":
+                data = types.Content(role='model',parts=[types.Part.from_text(text=content)],)
+            else:
+                data = types.Content(role='user',parts=[types.Part.from_text(text=content)],)
                 model_history.append(data)
     return model_history
 
