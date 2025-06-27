@@ -69,7 +69,7 @@ def show_message(prompt, image, loading_str):
         # 初始化变量
         image_count = 0
         full_response = "" 
-        thought_text = "## **Thoughts summary:**"
+        thought_text = "## 思维链"
         image_data = None
         try:
             for chunk in response_stream:
@@ -95,7 +95,6 @@ def show_message(prompt, image, loading_str):
                     elif part.text:
                         full_response += part.text
                         message_placeholder.markdown(full_response + "_")
-                full_response = thought_text + full_response 
             # 结束流式输出后一次性全部刷新
             # if thought_text:
             #     message_placeholder.markdown(thought_text)
@@ -103,6 +102,7 @@ def show_message(prompt, image, loading_str):
             #     message_placeholder.markdown(full_response)
         except Exception as e:
             st.exception(e)
+        full_response = thought_text + full_response 
         if image_data:
             st.session_state.history_pic.append({"role": "assistant", "text": full_response, "image": image_data})
         else:
