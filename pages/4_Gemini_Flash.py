@@ -21,6 +21,8 @@ if "app_key" not in st.session_state:
         st.session_state.app_key = app_key
 if 'history' not in st.session_state:
     st.session_state.history = []
+if 'history_pic' not in st.session_state:
+    st.session_state.history_pic = []
 
 try:
     # gemini-pro-vision
