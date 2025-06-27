@@ -80,7 +80,10 @@ def convert_history_gemini():
 def show_message(prompt, image, loading_str):
     if image:
         prompt = [prompt, image]
-    history = convert_history_gemini()
+    if st.session_state.history_pic:
+        history = convert_history_gemini()
+    else:
+        history = []
     chat = client.chats.create(model='gemini-2.5-flash', config=config, history=history)
     # 开启对话
     with st.chat_message("assistant"):
