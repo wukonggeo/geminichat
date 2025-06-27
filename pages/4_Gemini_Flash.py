@@ -97,10 +97,10 @@ def show_message(prompt, image, loading_str):
                         message_placeholder.markdown(full_response + "_")
                 full_response = thought_text + full_response 
             # 结束流式输出后一次性全部刷新
-            if thought_text:
-                message_placeholder.markdown(thought_text)
-            elif full_response:
-                message_placeholder.markdown(full_response)
+            # if thought_text:
+            #     message_placeholder.markdown(thought_text)
+            # elif full_response:
+            #     message_placeholder.markdown(full_response)
         except Exception as e:
             st.exception(e)
         if image_data:
