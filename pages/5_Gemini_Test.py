@@ -82,6 +82,7 @@ def show_message(prompt, image, loading_str):
         prompt = [prompt, image]
     if st.session_state.history_pic:
         history = convert_history_gemini()
+        print(history)
     else:
         history = []
     chat = client.chats.create(model='gemini-2.5-flash', config=config, history=history)
