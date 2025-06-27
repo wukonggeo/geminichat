@@ -18,8 +18,6 @@ st.title('Upload Image And Ask')
 if "history_pic" not in st.session_state:
     st.session_state.history_pic = []
 if 'app_key' not in st.session_state:
-    st.session_state.app_key = None
-if st.session_state.app_key is None:
     app_key = st.text_input("Your Gemini App Key", type='password', key="gemini_key_input")
     if app_key:
         st.session_state.app_key = app_key
