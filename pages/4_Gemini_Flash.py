@@ -14,15 +14,22 @@ st.set_page_config(
     }
 )
 st.title('Upload Image And Ask')
-
-if "app_key" not in st.session_state:
-    app_key = st.text_input("Your Gemini App Key", type='password')
+# 初始化状态信息
+if "history_pic" not in st.session_state:
+    st.session_state.history_pic = []
+if 'app_key' not in st.session_state:
+    st.session_state.app_key = None
+if st.session_state.app_key is None:
+    app_key = st.text_input("Your Gemini App Key", type='password', key="gemini_key_input")
     if app_key:
         st.session_state.app_key = app_key
-if 'history' not in st.session_state:
-    st.session_state.history = []
-if 'history_pic' not in st.session_state:
-    st.session_state.history_pic = []
+        st.rerun()
+
+# 侧边状态栏
+with st.sidebar:
+    if st.button("Clear Chat Window", use_container_width = True, type="primary"):
+        st.session_state.history_pic  = []
+        st.rerun()
 
 try:
     # gemini-pro-vision
