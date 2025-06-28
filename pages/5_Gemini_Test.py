@@ -37,7 +37,6 @@ try:
         include_thoughts=True
       )
     )
-    chat = client.chats.create(model='gemini-2.5-flash', config=config)
 except AttributeError as e:
     st.warning("Please Put Your Gemini App Key First.")
 
@@ -70,21 +69,19 @@ def convert_history_gemini():
         for message in st.session_state.history_pic:
             content = message["text"]
             if message['role'] == "assistant":
-                data = types.Content(role='model',parts=[types.Part.from_text(text=content)],)
+                # data = types.Content(role='model',parts=[types.Part.from_text(text=content)],)
+                model_history.append(types.ModelContent(content))
             else:
-                data = types.Content(role='user',parts=[types.Part.from_text(text=content)],)
-                model_history.append(data)
+                # data = types.Content(role='user',parts=[types.Part.from_text(text=content)],)
+                 model_history.append(types.UserContent(content))
     return model_history
 
 
 def show_message(prompt, image, loading_str):
     if image:
         prompt = [prompt, image]
-    if st.session_state.history_pic:
-        history = convert_history_gemini()
-        print(history)
-    else:
-        history = []
+    history = convert_history_gemini()
+    chat = client.chats.create(model='gemini-2.5-flash', config=config, history=history)
     # 开启对话
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
