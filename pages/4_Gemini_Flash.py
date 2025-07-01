@@ -14,6 +14,16 @@ st.set_page_config(
     }
 )
 st.title('Upload Image And Ask')
+model_options = {
+    'gemini-2.0-pro-exp-02-05': "Pro",
+    'gemini-2.0-flash': "Flash",
+    'gemini-2.0-flash-exp': "Vison",
+    'gemini-2.5-flash-preview-05-20': "Think-Pre",
+    'gemini-2.5-flash': "Think-Flash",
+    "gemini-2.5-pro":"Think-PRO"
+    }
+default_index = list(model_options.keys()).index('gemini-2.5-flash-preview-05-20')
+
 # 初始化状态信息
 if "history_pic" not in st.session_state:
     st.session_state.history_pic = []
@@ -30,7 +40,12 @@ with st.sidebar:
     if st.button("Clear Chat Window", use_container_width = True, type="primary"):
         st.session_state.history_pic  = []
         st.rerun()
-
+    selected_model = st.selectbox(
+        "Select Model",
+        options=list(model_options.keys()),
+        format_func=lambda x: model_options[x],  #显示的名称
+        index=default_index
+        )
 try:
     # gemini-pro-vision
     client = genai.Client(api_key = st.session_state.app_key)
@@ -83,7 +98,7 @@ def show_message(prompt, image, loading_str):
     if image:
         prompt = [prompt, image]
     history = convert_history_gemini()
-    chat = client.chats.create(model='gemini-2.5-flash', config=config, history=history)
+    chat = client.chats.create(model=selected_model, config=config, history=history)
     # 开启对话
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
