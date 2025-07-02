@@ -28,8 +28,8 @@ default_index = list(model_options.keys()).index('gemini-2.5-flash-preview-05-20
 if "history_pic" not in st.session_state:
     st.session_state.history_pic = []
 if 'app_key' not in st.session_state:
-    st.session_state.app_key = None
-if st.session_state.app_key is None:
+    st.session_state.app_key = "123"
+if st.session_state.app_key == "123":
     app_key = st.text_input("Your Gemini App Key", type='password', key="gemini_key_input")
     if app_key:
         st.session_state.app_key = app_key
