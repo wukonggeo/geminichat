@@ -105,8 +105,8 @@ def show_message(prompt, image, loading_str):
         message_placeholder.markdown(loading_str)
         # 初始化变量
         image_count = 0
-        full_response = "**正式回答:**\n" 
-        thought_text = "**思维链：**\n"
+        full_response = "**正式回答:** \n" 
+        thought_text = "**思维链：** \n"
         image_data = None
         try:
             for chunk in chat.send_message_stream(prompt):
