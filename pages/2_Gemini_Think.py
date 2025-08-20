@@ -1,8 +1,9 @@
-from PIL import Image
 import google.generativeai as genai
 import streamlit as st
 import time
+import os 
 import random
+from PIL import Image
 from pathlib import Path
 from utils import SAFETY_SETTTINGS
 
@@ -100,11 +101,23 @@ def save_uploaded_pdf(uploaded_file, save_path):
     return False
 
 
+def clear_other_pdfs(dir_path, keep_filename=None):
+    """删除指定目录下除 keep_filename 外的所有pdf文件。"""
+    pdf_files = dir_path.glob("*.pdf")
+    for f in pdf_files:
+        if keep_filename is not None and f.name == keep_filename:
+            continue
+        try:
+            f.unlink()
+        except Exception as e:
+            st.warning(f"删除 {f} 失败: {e}")
+
 @st.cache_data(show_spinner=False)
 def input_file(file):
     # uploaded_file = st.file_uploader('请打开一个文件', type=['pdf'], accept_multiple_files=True)
     file_save_path = None
     if file:
+        clear_other_pdfs(BASE_PATH, keep_filename=file.name)
         file_save_path = BASE_PATH / file.name
         save_uploaded_pdf(file, file_save_path)
     with st.spinner("正在处理文件..."):
@@ -112,24 +125,19 @@ def input_file(file):
     return file_save_path
 
 
-# Streamlit每次对话都会将所有函数重新执行一遍
-uploaded_pdf = st.file_uploader(
-    "请打开一个文件", type=["pdf"], accept_multiple_files=True
-)
-if uploaded_pdf is not None:
-    file_path = input_file(uploaded_pdf)
-else:
-    file_path = None
-
 image = None
+file_path = None
 if "app_key" in st.session_state and st.session_state.app_key is not None:
-    uploaded_image = st.file_uploader("choose a pic...", type=["jpg", "png", "jpeg", "gif"], label_visibility='collapsed', on_change = clear_state)
-    if uploaded_image is not None:
-        image = Image.open(uploaded_image).convert('RGB')
-        image_bytes = image.tobytes()
-        width, height = image.size
-        resized_img = image.resize((128, int(height/(width/128))), Image.LANCZOS)
-        st.image(resized_img)  
+    uploaded_file = st.file_uploader("choose a pic or pdf...", type=["pdf", "jpg", "png", "jpeg", "gif"], label_visibility='collapsed', on_change = clear_state)
+    if uploaded_file is not None:
+        if file.type == "application/pdf":
+            file_path = input_file(uploaded_pdf)
+        else:
+            image = Image.open(uploaded_image).convert('RGB')
+            image_bytes = image.tobytes()
+            width, height = image.size
+            resized_img = image.resize((128, int(height/(width/128))), Image.LANCZOS)
+            st.image(resized_img)
 
 
 for message in st.session_state.history_pic:
