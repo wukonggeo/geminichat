@@ -132,6 +132,7 @@ if "app_key" in st.session_state and st.session_state.app_key is not None:
     if uploaded_file is not None:
         if file.type == "application/pdf":
             file_path = input_file(uploaded_pdf)
+            # client.files.upload(file="invoice.pdf", config={'display_name': 'invoice'})
         else:
             image = Image.open(uploaded_image).convert('RGB')
             image_bytes = image.tobytes()
