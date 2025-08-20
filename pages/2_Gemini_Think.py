@@ -130,7 +130,7 @@ file_path = None
 if "app_key" in st.session_state and st.session_state.app_key is not None:
     uploaded_file = st.file_uploader("choose a pic or pdf...", type=["pdf", "jpg", "png", "jpeg", "gif"], label_visibility='collapsed', on_change = clear_state)
     if uploaded_file is not None:
-        if file.type == "application/pdf":
+        if uploaded_file.type == "application/pdf":
             file_path = input_file(uploaded_pdf)
             # client.files.upload(file="invoice.pdf", config={'display_name': 'invoice'})
         else:
