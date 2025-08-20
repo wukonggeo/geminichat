@@ -1,8 +1,9 @@
+import os 
+import time
+import random
 import google.generativeai as genai
 import streamlit as st
-import time
-import os 
-import random
+
 from PIL import Image
 from pathlib import Path
 from utils import SAFETY_SETTTINGS
@@ -23,7 +24,7 @@ model_options = {
     'gemini-2.5-flash': "Think-Flash",
     "gemini-2.5-pro":"Think-PRO"
     }
-default_index = list(model_options.keys()).index('gemini-2.0-flash')
+default_index = list(model_options.keys()).index('gemini-2.5-flash')
 BASE_PATH = Path(__file__).resolve().parents[1] / 'resource'
 
 # 初始化状态信息
