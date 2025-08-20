@@ -4,6 +4,7 @@ import random
 import streamlit as st
 
 from PIL import Image
+from pathlib import Path
 from google import genai
 from google.genai import types
 
@@ -24,8 +25,7 @@ model_options = {
     "gemini-2.5-pro":"Think-PRO"
     }
 default_index = list(model_options.keys()).index('gemini-2.5-flash-preview-05-20')
-BASE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE_PATH = os.path.join(BASE_PATH, "resource")
+BASE_PATH = Path(__file__).resolve().parents[1] / 'resource'
 
 # 初始化状态信息
 if "history_pic" not in st.session_state:
@@ -184,7 +184,7 @@ def input_file(file):
     file_save_path = None
     if file:
         clear_other_pdfs(BASE_PATH, keep_filename=file.name)
-        file_save_path = os.path.join(BASE_PATH, file.name)
+        file_save_path = BASE_PATH / file.name
         save_uploaded_pdf(file, file_save_path)
     with st.spinner("正在处理文件..."):
         time.sleep(2)
