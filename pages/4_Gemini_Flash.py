@@ -194,7 +194,7 @@ if "app_key" in st.session_state:
     if uploaded_file is not None:
         if uploaded_file.type == "application/pdf":
             st.info("检测到PDF文件，正在处理中...")
-            file_path = input_file(uploaded_pdf)
+            file_path = input_file(uploaded_file)
             file = client.files.upload(file=file_path, config={'display_name': 'reference'})
         else:
             image = Image.open(uploaded_image).convert('RGB')
