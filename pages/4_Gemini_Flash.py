@@ -186,8 +186,8 @@ def input_file(file):
         clear_other_pdfs(BASE_PATH, keep_filename=file.name)
         file_save_path = BASE_PATH / file.name
         save_uploaded_pdf(file, file_save_path)
-    with st.spinner("正在处理文件..."):
-        time.sleep(2)
+    with st.spinner("正在处理PDF文件..."):
+        time.sleep(1)
     return file_save_path
 
 
@@ -196,7 +196,6 @@ if "app_key" in st.session_state:
     uploaded_file = st.file_uploader("请选择本地PDF或图片...", type=["pdf", "jpg", "png", "jpeg", "gif"], label_visibility='collapsed', on_change = clear_state)
     if uploaded_file is not None:
         if uploaded_file.type == "application/pdf":
-            st.info("检测到PDF文件，正在处理中...")
             file_path = input_file(uploaded_file)
             file = client.files.upload(file=file_path, config={'display_name': 'reference'})
         else:
