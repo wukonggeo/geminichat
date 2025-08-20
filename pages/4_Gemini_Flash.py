@@ -97,7 +97,7 @@ def convert_history_gemini():
     return model_history
 
 
-def show_message(prompt, image, loading_str):
+def show_message(prompt, image, file, loading_str):
     if image:
         prompt = [prompt, image]
     if file:
