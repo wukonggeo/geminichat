@@ -3,6 +3,7 @@ import google.generativeai as genai
 import streamlit as st
 import time
 import random
+from pathlib import Path
 from utils import SAFETY_SETTTINGS
 
 st.set_page_config(
@@ -22,6 +23,7 @@ model_options = {
     "gemini-2.5-pro":"Think-PRO"
     }
 default_index = list(model_options.keys()).index('gemini-2.0-flash')
+BASE_PATH = Path(__file__).resolve().parents[1] / 'resource'
 
 # 初始化状态信息
 if "history_pic" not in st.session_state:
@@ -84,15 +86,50 @@ def show_message(prompt, loading_str, image=None):
         message_placeholder.markdown(full_response)
         st.session_state.history_pic = model_chat.history
 
+
+def save_uploaded_pdf(uploaded_file, save_path):
+  """
+  保存上传的 PDF 文件到本地。
+  """
+  try:
+    with open(save_path, "wb") as f:  # 以二进制写入模式打开文件
+      f.write(uploaded_file.getbuffer())  # 将上传文件的内容写入文件
+    return True
+  except Exception as e:
+    print(f"保存文件失败: {e}")  # 打印错误信息，方便调试
+    return False
+
+
+@st.cache_data(show_spinner=False)
+def input_file(file):
+    # uploaded_file = st.file_uploader('请打开一个文件', type=['pdf'], accept_multiple_files=True)
+    if file:
+        file_save_path = BASE_PATH / file.name
+        save_uploaded_pdf(file, file_save_path)
+    with st.spinner("正在处理文件..."):
+        time.sleep(2)
+    return file_save_path
+
+
+# Streamlit每次对话都会将所有函数重新执行一遍
+uploaded_pdf = st.file_uploader(
+    "请打开一个文件", type=["pdf"], accept_multiple_files=True
+)
+if uploaded_pdf is not None:
+    file_path = input_file(uploaded_pdf)
+else:
+    file_path = None
+
 image = None
 if "app_key" in st.session_state and st.session_state.app_key is not None:
-    uploaded_file = st.file_uploader("choose a pic...", type=["jpg", "png", "jpeg", "gif"], label_visibility='collapsed', on_change = clear_state)
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file).convert('RGB')
+    uploaded_image = st.file_uploader("choose a pic...", type=["jpg", "png", "jpeg", "gif"], label_visibility='collapsed', on_change = clear_state)
+    if uploaded_image is not None:
+        image = Image.open(uploaded_image).convert('RGB')
         image_bytes = image.tobytes()
         width, height = image.size
         resized_img = image.resize((128, int(height/(width/128))), Image.LANCZOS)
         st.image(resized_img)  
+
 
 for message in st.session_state.history_pic:
       role = "assistant" if message.role == "model" else message.role
