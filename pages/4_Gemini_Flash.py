@@ -221,4 +221,4 @@ if "app_key" in st.session_state:
         with st.chat_message("user"):
             st.markdown(prompt)
             st.session_state.history_pic.append({"role": "user", "text": prompt})
-        show_message(prompt, image, "Thinking...")
+        show_message(prompt, image, file, "Thinking...")
