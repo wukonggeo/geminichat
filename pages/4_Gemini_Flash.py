@@ -192,7 +192,8 @@ image = None
 if "app_key" in st.session_state:
     uploaded_file = st.file_uploader("请选择本地PDF或图片...", type=["pdf", "jpg", "png", "jpeg", "gif"], label_visibility='collapsed', on_change = clear_state)
     if uploaded_file is not None:
-        if file.type == "application/pdf":
+        if uploaded_file.type == "application/pdf":
+            st.info("检测到PDF文件，正在处理中...")
             file_path = input_file(uploaded_pdf)
             file = client.files.upload(file=file_path, config={'display_name': 'reference'})
         else:
