@@ -97,6 +97,8 @@ def convert_history_gemini():
 def show_message(prompt, image, loading_str):
     if image:
         prompt = [prompt, image]
+    if file:
+        prompt = [prompt, file]
     history = convert_history_gemini()
     chat = client.chats.create(model=selected_model, config=config, history=history)
     # 开启对话
@@ -148,14 +150,57 @@ def show_message(prompt, image, loading_str):
             st.session_state.history_pic.append({"role": "assistant", "text": full_response, "image": None})
 
 
+def save_uploaded_pdf(uploaded_file, save_path):
+  """
+  保存上传的PDF文件到本地。
+  """
+  try:
+    with open(save_path, "wb") as f:  # 以二进制写入模式打开文件
+      f.write(uploaded_file.getbuffer())  # 将上传文件的内容写入文件
+    return True
+  except Exception as e:
+    print(f"保存文件失败: {e}")  # 打印错误信息，方便调试
+    return False
+
+
+def clear_other_pdfs(dir_path, keep_filename=None):
+    """删除指定目录下除 keep_filename 外的所有pdf文件。"""
+    pdf_files = dir_path.glob("*.pdf")
+    for f in pdf_files:
+        if keep_filename is not None and f.name == keep_filename:
+            continue
+        try:
+            f.unlink()
+        except Exception as e:
+            st.warning(f"删除 {f} 失败: {e}")
+
+
+@st.cache_data(show_spinner=False)
+def input_file(file):
+    # uploaded_file = st.file_uploader('请打开一个文件', type=['pdf'], accept_multiple_files=True)
+    file_save_path = None
+    if file:
+        clear_other_pdfs(BASE_PATH, keep_filename=file.name)
+        file_save_path = BASE_PATH / file.name
+        save_uploaded_pdf(file, file_save_path)
+    with st.spinner("正在处理文件..."):
+        time.sleep(2)
+    return file_save_path
+
+
 image = None
 if "app_key" in st.session_state:
-    uploaded_file = st.file_uploader("请选择本地图片...", type=["jpg", "png", "jpeg", "gif"], label_visibility='collapsed', on_change = clear_state)
+    uploaded_file = st.file_uploader("请选择本地PDF或图片...", type=["pdf", "jpg", "png", "jpeg", "gif"], label_visibility='collapsed', on_change = clear_state)
     if uploaded_file is not None:
-        image = Image.open(uploaded_file).convert('RGB')
-        width, height = image.size
-        resized_img = image.resize((256, int(height/(width/256))), Image.LANCZOS)
-        st.image(resized_img)    
+        if file.type == "application/pdf":
+            file_path = input_file(uploaded_pdf)
+            file = client.files.upload(file=file_path, config={'display_name': 'reference'})
+        else:
+            image = Image.open(uploaded_image).convert('RGB')
+            image_bytes = image.tobytes()
+            width, height = image.size
+            resized_img = image.resize((128, int(height/(width/128))), Image.LANCZOS)
+            st.image(resized_img)
 
 if len(st.session_state.history_pic) > 0:
     for item in st.session_state.history_pic:
