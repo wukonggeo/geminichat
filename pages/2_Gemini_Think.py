@@ -103,6 +103,7 @@ def save_uploaded_pdf(uploaded_file, save_path):
 @st.cache_data(show_spinner=False)
 def input_file(file):
     # uploaded_file = st.file_uploader('请打开一个文件', type=['pdf'], accept_multiple_files=True)
+    file_save_path = None
     if file:
         file_save_path = BASE_PATH / file.name
         save_uploaded_pdf(file, file_save_path)
