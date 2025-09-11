@@ -146,6 +146,8 @@ def show_message(prompt, image, file, loading_str):
             st.exception(e)
         full_response = thought_text + full_response
         message_placeholder.markdown(full_response)
+        # 只有回答成功时，更新历史消息
+        st.session_state.history_pic.append({"role": "user", "text": prompt})
         if image_data:
             st.session_state.history_pic.append({"role": "assistant", "text": full_response, "image": image_data})
         else:
@@ -220,5 +222,4 @@ if "app_key" in st.session_state:
         prompt = prompt.replace('\n', '  \n')
         with st.chat_message("user"):
             st.markdown(prompt)
-            st.session_state.history_pic.append({"role": "user", "text": prompt})
         show_message(prompt, image, file, "Thinking...")
