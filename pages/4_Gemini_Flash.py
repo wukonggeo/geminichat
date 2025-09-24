@@ -88,10 +88,10 @@ def convert_history_gemini():
     if len(st.session_state.history_pic) > 0:
         for message in st.session_state.history_pic:
             content = message["text"]
-            if "image" in message:
+            if "image" in message and message['image'] is not None:
                 content = [
                     message["text"],
-                    types.Part.from_bytes(data=image_bytes, mime_type="image/png"),
+                    types.Part.from_bytes(data= message['image'], mime_type="image/png"),
                 ]
             if message['role'] == "assistant":
                 # data = types.Content(role='model',parts=[types.Part.from_text(text=content)],)
