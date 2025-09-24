@@ -94,6 +94,15 @@ def convert_history_gemini():
             else:
                 # data = types.Content(role='user',parts=[types.Part.from_text(text=content)],)
                  model_history.append(types.UserContent(content))
+            if "image" in message:
+                content_image = {
+                    "mime_type": "image/png",
+                    "data": message["image"],
+                }
+                if message['role'] == "assistant":
+                    model_history.append(types.ModelContent(content_image))
+                else:
+                    model_history.append(types.UserContent(content_image))
     return model_history
 
 
