@@ -83,7 +83,7 @@ def convert_history_model(history_list):
     return model_history
 
 
-def convert_history_gemini():
+def convert_history_gemini_base():
     model_history = []
     if len(st.session_state.history_pic) > 0:
         for message in st.session_state.history_pic:
@@ -103,6 +103,25 @@ def convert_history_gemini():
                     model_history.append(types.ModelContent(content_image))
                 else:
                     model_history.append(types.UserContent(content_image))
+    return model_history
+
+
+def convert_history_gemini():
+    model_history = []
+    if len(st.session_state.history_pic) > 0:
+        for message in st.session_state.history_pic:
+            content = [message["text"]]
+            if "image" in message:
+                content = [
+                    message["text"],
+                    types.Part.from_bytes(data=image_bytes, mime_type="image/png"),
+                ]
+            if message['role'] == "assistant":
+                # data = types.Content(role='model',parts=[types.Part.from_text(text=content)],)
+                model_history.append(types.ModelContent(content))
+            else:
+                # data = types.Content(role='user',parts=[types.Part.from_text(text=content)],)
+                 model_history.append(types.UserContent(content))
     return model_history
 
 
