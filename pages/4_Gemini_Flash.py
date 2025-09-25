@@ -204,7 +204,7 @@ if "app_key" in st.session_state:
             file_path = input_file(uploaded_file)
             file = client.files.upload(file=file_path, config={'display_name': 'reference'})
         else:
-            image = Image.open(uploaded_image).convert('RGB')
+            image = Image.open(uploaded_file).convert('RGB')
             image_bytes = image.tobytes()
             width, height = image.size
             resized_img = image.resize((128, int(height/(width/128))), Image.LANCZOS)
