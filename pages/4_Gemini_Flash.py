@@ -103,10 +103,13 @@ def convert_history_gemini():
 
 
 def show_message(prompt, image, file, loading_str):
-    if image:
+    global data_cache
+    if image and not data_cache:
         prompt = [prompt, image]
-    if file:
+        data_cache = True
+    if file and not data_cache:
         prompt = [prompt, file]
+        data_cache = True
     history = convert_history_gemini()
     chat = client.chats.create(model=selected_model, config=config, history=history)
     # 开启对话
@@ -196,7 +199,7 @@ def input_file(file):
     return file_save_path
 
 
-image, file = None, None
+image, file, data_cache = None, None, False
 if "app_key" in st.session_state:
     uploaded_file = st.file_uploader("请选择本地PDF或图片...", type=["pdf", "jpg", "png", "jpeg", "gif"], label_visibility='collapsed', on_change = clear_state)
     if uploaded_file is not None:
