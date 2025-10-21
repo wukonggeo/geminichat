@@ -198,6 +198,7 @@ def input_file(file):
         clear_other_pdfs(BASE_PATH, keep_filename=file.name)
         file_save_path = BASE_PATH / file.name
         save_uploaded_pdf(file, file_save_path)
+        st.session_state['data_file'] = False
     return file_save_path
 
 
