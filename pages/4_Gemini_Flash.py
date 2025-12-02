@@ -24,7 +24,7 @@ model_options = {
     'gemini-2.5-flash': "Think-Flash",
     "gemini-2.5-pro":"Think-PRO"
     }
-default_index = list(model_options.keys()).index('gemini-2.5-flash-preview-05-20')
+default_index = list(model_options.keys()).index('gemini-2.5-pro"')
 BASE_PATH = Path(__file__).resolve().parents[1] / 'resource'
 
 # 初始化状态信息
