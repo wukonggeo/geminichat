@@ -53,7 +53,10 @@ with st.sidebar:
         )
 try:
     # gemini-pro-vision
-    client = genai.Client(api_key = st.session_state.app_key)
+    if len(st.session_state.app_key) > 40:
+        client = genai.Client(api_key = st.session_state.app_key)
+    else:
+        client = genai.Client(api_key = st.session_state.app_key, vertexai=True)
     config = types.GenerateContentConfig(
       thinking_config=types.ThinkingConfig(
         include_thoughts=True
