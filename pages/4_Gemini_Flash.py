@@ -53,7 +53,7 @@ with st.sidebar:
         )
 try:
     # gemini-pro-vision
-    if len(st.session_state.app_key) > 40:
+    if len(st.session_state.app_key) < 40:
         client = genai.Client(api_key = st.session_state.app_key)
     else:
         client = genai.Client(api_key = st.session_state.app_key, vertexai=True)
