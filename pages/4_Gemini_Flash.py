@@ -53,10 +53,14 @@ with st.sidebar:
         )
 try:
     # gemini-pro-vision
-    if len(st.session_state.app_key) < 40:
-        client = genai.Client(api_key = st.session_state.app_key)
+    app_key = st.session_state.app_key
+    if app_key is None:
+        st.warning("Please Put Your Gemini App Key First.")
     else:
-        client = genai.Client(api_key = st.session_state.app_key, vertexai=True)
+        if len(app_key) < 40:
+            client = genai.Client(api_key = app_key)
+        else:
+            client = genai.Client(api_key = app_key, vertexai=True)
     config = types.GenerateContentConfig(
       thinking_config=types.ThinkingConfig(
         include_thoughts=True
