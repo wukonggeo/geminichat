@@ -210,7 +210,7 @@ def input_file(file):
 
 
 image, file = None, None
-if "app_key" in st.session_state:
+if "app_key" in st.session_state and st.session_state.app_key is not None:
     uploaded_file = st.file_uploader("请选择本地PDF或图片...", type=["pdf", "jpg", "png", "jpeg", "gif"], label_visibility='collapsed', on_change = clear_state)
     if uploaded_file is not None:
         if uploaded_file.type == "application/pdf":
