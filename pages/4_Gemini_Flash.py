@@ -215,7 +215,15 @@ if "app_key" in st.session_state and st.session_state.app_key is not None:
     if uploaded_file is not None:
         if uploaded_file.type == "application/pdf":
             file_path = input_file(uploaded_file)
-            file = client.files.upload(file=file_path, config={'display_name': 'reference'})
+            try:
+                # 'name' 属性是上传文件的原始名称，可以作为展示名称 uploaded_file.name
+                file = client.files.upload(file=uploaded_file, config={'display_name':'reference materials' })
+                st.success(f"文件 '{uploaded_file.name}' 上传成功！")
+                st.write(f"Google GenAI File ID: {file.name}")
+            except Exception as e:
+                st.error(f"文件上传失败: {e}")
+                # 打印详细错误以帮助调试
+                st.exception(e)
         else:
             image = Image.open(uploaded_file).convert('RGB')
             image_bytes = image.tobytes()
