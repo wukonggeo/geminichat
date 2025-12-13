@@ -215,15 +215,15 @@ if "app_key" in st.session_state and st.session_state.app_key is not None:
     uploaded_file = st.file_uploader("请选择本地PDF或图片...", type=["pdf", "jpg", "png", "jpeg", "gif"], label_visibility='collapsed', on_change = clear_state)
     if uploaded_file is not None:
         if uploaded_file.type == "application/pdf":
-            # 将文件保存到本地
-            # file_path = input_file(uploaded_file)
             try:
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
-                    tmp_file.write(uploaded_file.getvalue())
-                    tmp_file_path = tmp_file.name
+                # 将文件保存到本地
+                file_path = input_file(uploaded_file)
+                # with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
+                #     tmp_file.write(uploaded_file.getvalue())
+                #     tmp_file_path = tmp_file.name
                 st.info("正在上传文件到 Gemini...")
                 # 'name' 属性是上传文件的原始名称，可以作为展示名称 uploaded_file.name
-                file = client.files.upload(file=tmp_file_path, config={'display_name':'reference materials' })
+                file = client.files.upload(file=file_path, config={'display_name':'reference materials' })
                 st.success(f"文件 '{uploaded_file.name}' 上传成功！")
                 st.write(f"Google GenAI File ID: {file.name}")
             except Exception as e:
