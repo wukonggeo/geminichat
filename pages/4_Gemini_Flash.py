@@ -218,6 +218,7 @@ if "app_key" in st.session_state and st.session_state.app_key is not None:
             try:
                 # 将文件保存到本地
                 file_path = input_file(uploaded_file)
+                tmp_file_path = None
                 # with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
                 #     tmp_file.write(uploaded_file.getvalue())
                 #     tmp_file_path = tmp_file.name
@@ -231,7 +232,7 @@ if "app_key" in st.session_state and st.session_state.app_key is not None:
                 # 打印详细错误以帮助调试
                 st.exception(e)
             finally:
-                if os.path.exists(tmp_file_path):
+                if tmp_file_path and os.path.exists(tmp_file_path):
                     os.remove(tmp_file_path)
         else:
             image = Image.open(uploaded_file).convert('RGB')
