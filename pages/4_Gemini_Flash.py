@@ -1,6 +1,7 @@
 import os
 import time
 import random
+import tempfile
 import streamlit as st
 
 from PIL import Image
@@ -214,16 +215,25 @@ if "app_key" in st.session_state and st.session_state.app_key is not None:
     uploaded_file = st.file_uploader("请选择本地PDF或图片...", type=["pdf", "jpg", "png", "jpeg", "gif"], label_visibility='collapsed', on_change = clear_state)
     if uploaded_file is not None:
         if uploaded_file.type == "application/pdf":
-            file_path = input_file(uploaded_file)
+            # 将文件保存到本地
+            # file_path = input_file(uploaded_file)
             try:
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
+                    tmp_file.write(uploaded_file.getvalue())
+                    tmp_file_path = tmp_file.name
+                st.info("正在上传文件到 Gemini...")
                 # 'name' 属性是上传文件的原始名称，可以作为展示名称 uploaded_file.name
-                file = client.files.upload(file=uploaded_file, config={'display_name':'reference materials' })
+                file = client.files.upload(file=tmp_file_path, config={'display_name':'reference materials' })
                 st.success(f"文件 '{uploaded_file.name}' 上传成功！")
                 st.write(f"Google GenAI File ID: {file.name}")
+            finally:
+                if os.path.exists(tmp_file_path):
+                    os.remove(tmp_file_path)
             except Exception as e:
                 st.error(f"文件上传失败: {e}")
                 # 打印详细错误以帮助调试
                 st.exception(e)
+                
         else:
             image = Image.open(uploaded_file).convert('RGB')
             image_bytes = image.tobytes()
