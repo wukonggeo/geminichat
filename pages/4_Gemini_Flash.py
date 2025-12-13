@@ -226,14 +226,13 @@ if "app_key" in st.session_state and st.session_state.app_key is not None:
                 file = client.files.upload(file=tmp_file_path, config={'display_name':'reference materials' })
                 st.success(f"文件 '{uploaded_file.name}' 上传成功！")
                 st.write(f"Google GenAI File ID: {file.name}")
-            finally:
-                if os.path.exists(tmp_file_path):
-                    os.remove(tmp_file_path)
             except Exception as e:
                 st.error(f"文件上传失败: {e}")
                 # 打印详细错误以帮助调试
                 st.exception(e)
-                
+            finally:
+                if os.path.exists(tmp_file_path):
+                    os.remove(tmp_file_path)
         else:
             image = Image.open(uploaded_file).convert('RGB')
             image_bytes = image.tobytes()
