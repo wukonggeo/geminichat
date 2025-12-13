@@ -40,6 +40,8 @@ if st.session_state.app_key is None:
         st.rerun()
 if 'data_file' not in st.session_state:
     st.session_state['data_file'] = False
+if 'use_vertex' not in st.session_state:
+     st.session_state['use_vertex'] = False
 
 # 侧边状态栏
 with st.sidebar:
@@ -61,6 +63,7 @@ try:
         if len(app_key) < 40:
             client = genai.Client(api_key = app_key)
         else:
+            st.session_state['use_vertex'] = True
             client = genai.Client(api_key = app_key, vertexai=True)
     config = types.GenerateContentConfig(
       thinking_config=types.ThinkingConfig(
@@ -118,7 +121,10 @@ def show_message(prompt, image, file, loading_str):
         prompt = [prompt, image]
         st.session_state.data_file = True
     if file and not st.session_state.data_file:
-        prompt = [prompt, file]
+        if st.session_state.use_vertex:
+            prompt = [prompt, types.Part.from_bytes(data=file, mime_type="application/pdf")]
+        else:
+            prompt = [prompt, file]
         st.session_state.data_file = True
     history = convert_history_gemini()
     chat = client.chats.create(model=selected_model, config=config, history=history)
@@ -175,15 +181,16 @@ def show_message(prompt, image, file, loading_str):
 
 def save_uploaded_pdf(uploaded_file, save_path):
   """
-  保存上传的PDF文件到本地。
+  保存上传的PDF文件到本地，并返回数据流。
   """
   try:
+    pdf_data = uploaded_file.getvalue()
     with open(save_path, "wb") as f:  # 以二进制写入模式打开文件
       f.write(uploaded_file.getbuffer())  # 将上传文件的内容写入文件
-    return True
+    return pdf_data
   except Exception as e:
     print(f"保存文件失败: {e}")  # 打印错误信息，方便调试
-    return False
+    return None
 
 
 def clear_other_pdfs(dir_path, keep_filename=None):
@@ -202,12 +209,13 @@ def clear_other_pdfs(dir_path, keep_filename=None):
 def input_file(file):
     # uploaded_file = st.file_uploader('请打开一个文件', type=['pdf'], accept_multiple_files=True)
     file_save_path = None
+    file_data = None
     if file:
         clear_other_pdfs(BASE_PATH, keep_filename=file.name)
         file_save_path = BASE_PATH / file.name
-        save_uploaded_pdf(file, file_save_path)
+        file_data = save_uploaded_pdf(file, file_save_path)
         st.session_state['data_file'] = False
-    return file_save_path
+    return file_save_path, file_data
 
 
 image, file = None, None
@@ -217,23 +225,19 @@ if "app_key" in st.session_state and st.session_state.app_key is not None:
         if uploaded_file.type == "application/pdf":
             try:
                 # 将文件保存到本地
-                file_path = input_file(uploaded_file)
-                tmp_file_path = None
-                # with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
-                #     tmp_file.write(uploaded_file.getvalue())
-                #     tmp_file_path = tmp_file.name
-                st.info("正在上传文件到 Gemini...")
-                # 'name' 属性是上传文件的原始名称，可以作为展示名称 uploaded_file.name
-                file = client.files.upload(file=file_path, config={'display_name':'reference materials' })
-                st.success(f"文件 '{uploaded_file.name}' 上传成功！")
-                st.write(f"Google GenAI File ID: {file.name}")
+                file_path, file_data = input_file(uploaded_file)
+                if not st.session_state['use_vertex']:
+                    # 使用client加载的文件数据，可以作为展示名称 uploaded_file.name
+                    file = client.files.upload(file=file_path, config={'display_name':'reference materials' })
+                    st.success(f"文件 '{uploaded_file.name}' 上传成功！")
+                    st.write(f"Google GenAI File ID: {file.name}")
+                else:
+                    # 使用二进制数据
+                    file = file_data
             except Exception as e:
                 st.error(f"文件上传失败: {e}")
                 # 打印详细错误以帮助调试
                 st.exception(e)
-            finally:
-                if tmp_file_path and os.path.exists(tmp_file_path):
-                    os.remove(tmp_file_path)
         else:
             image = Image.open(uploaded_file).convert('RGB')
             image_bytes = image.tobytes()
