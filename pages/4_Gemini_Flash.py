@@ -22,6 +22,7 @@ model_options = {
     'gemini-2.0-flash': "Flash",
     'gemini-2.0-flash-exp': "Vison",
     'gemini-3-flash-preview': "Flash-Pre",
+    'gemini-3-pro-preview': "Pro-Pre",
     'gemini-2.5-flash': "Think-Flash",
     "gemini-2.5-pro":"Think-PRO"
     }
