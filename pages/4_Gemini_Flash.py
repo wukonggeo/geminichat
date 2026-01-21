@@ -1,4 +1,5 @@
 import os
+import json
 import time
 import random
 import tempfile
@@ -49,6 +50,15 @@ with st.sidebar:
     if st.button("Clear Chat Window", use_container_width = True, type="primary"):
         st.session_state.history_pic  = []
         st.rerun()
+
+    st.download_button(
+        label="⬇️ Download Chat History (JSON)",
+        data=get_history_json(),
+        file_name="chat_history.json",
+        mime="application/json",
+        use_container_width=True
+    )
+
     selected_model = st.selectbox(
         "Select Model",
         options=list(model_options.keys()),
@@ -77,6 +87,17 @@ except AttributeError as e:
 
 def clear_state():
     st.session_state.history_pic = []
+
+
+def get_history_json():
+    return json.dumps(
+        {
+            "model": selected_model,
+            "history": st.session_state.history_pic
+        },
+        ensure_ascii=False,
+        indent=2
+    )
 
 
 def convert_history_model(history_list):
