@@ -45,12 +45,30 @@ if 'data_file' not in st.session_state:
 if 'use_vertex' not in st.session_state:
      st.session_state['use_vertex'] = False
 
+
+def get_history_json():
+    return json.dumps(
+        {
+            "model": selected_model,
+            "history": st.session_state.history_pic
+        },
+        ensure_ascii=False,
+        indent=2
+    )
+    
 # 侧边状态栏
 with st.sidebar:
     if st.button("Clear Chat Window", use_container_width = True, type="primary"):
         st.session_state.history_pic  = []
         st.rerun()
-
+        
+    selected_model = st.selectbox(
+        "Select Model",
+        options=list(model_options.keys()),
+        format_func=lambda x: model_options[x],  #显示的名称
+        index=default_index
+        )
+    
     st.download_button(
         label="⬇️ Download Chat History (JSON)",
         data=get_history_json(),
@@ -59,12 +77,6 @@ with st.sidebar:
         use_container_width=True
     )
 
-    selected_model = st.selectbox(
-        "Select Model",
-        options=list(model_options.keys()),
-        format_func=lambda x: model_options[x],  #显示的名称
-        index=default_index
-        )
 try:
     # gemini-pro-vision
     app_key = st.session_state.app_key
@@ -87,18 +99,6 @@ except AttributeError as e:
 
 def clear_state():
     st.session_state.history_pic = []
-
-
-def get_history_json():
-    return json.dumps(
-        {
-            "model": selected_model,
-            "history": st.session_state.history_pic
-        },
-        ensure_ascii=False,
-        indent=2
-    )
-
 
 def convert_history_model(history_list):
     model_history = []
