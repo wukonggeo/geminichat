@@ -1,4 +1,4 @@
-import os
+wimport os
 import json
 import time
 import random
@@ -48,46 +48,68 @@ if 'use_vertex' not in st.session_state:
 # 侧边状态栏
 st.markdown("""
 <style>
-    /* 定制下载按钮的样式 */
     .stDownloadButton button {
         width: 100%;
-        background-color: #007bff; /* 蓝色背景 */
+        background-color: #8E75FF; /* Gemini 紫色 */
         color: white !important;
-        border-radius: 8px;
+        border-radius: 10px;
         border: none;
-        padding: 0.5rem;
-        transition: all 0.3s ease;
-        font-weight: bold;
-        border: 1px solid #007bff;
+        padding: 0.6rem;
+        font-weight: 600;
+        margin-top: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
-
-    /* 鼠标悬停效果 */
     .stDownloadButton button:hover {
-        background-color: #0056b3; /* 深蓝色 */
-        border-color: #0056b3;
+        background-color: #7A62E0;
+        border: none;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        transform: translateY(-1px);
-    }
-
-    /* 激活点击效果 */
-    .stDownloadButton button:active {
-        transform: translateY(1px);
     }
 </style>
 """, unsafe_allow_html=True)
 
+
 def get_history_json(model_name):
+    import copy
+    
+    # 深度拷贝一份历史记录，避免修改原始对话显示
+    safe_history = []
+    
+    for item in st.session_state.history_pic:
+        # 复制字典，防止修改 session_state 本身
+        new_item = item.copy()
+        
+        # 处理 text 字段（可能是字符串，也可能是包含 File 对象的列表）
+        raw_text = new_item.get("text", "")
+        if isinstance(raw_text, list):
+            # 如果是列表，将其中的非字符串对象转为描述文字
+            clean_parts = []
+            for part in raw_text:
+                if isinstance(part, str):
+                    clean_parts.append(part)
+                else:
+                    # 将 Google File 对象或其他对象转为字符串描述
+                    clean_parts.append(f"<{type(part).__name__} file/object>")
+            new_item["text"] = " ".join(clean_parts)
+        
+        # 处理 image 字段（bytes 类型无法直接 JSON 序列化）
+        if "image" in new_item and new_item["image"] is not None:
+            # bytes 类型转为占位符描述
+            new_item["image"] = f"<Binary Image Data: {len(new_item['image'])} bytes>"
+            
+        safe_history.append(new_item)
+
     try:
         return json.dumps(
             {
                 "model": model_name,
-                "history": st.session_state.history_pic
+                "history": safe_history
             },
             ensure_ascii=False,
             indent=2
         )
-    except NameError as e:
-        return f"错误: 变量未定义 {e}"
+    except Exception as e:
+        # 如果还是报错，返回错误信息
+        return json.dumps({"error": f"序列化失败: {str(e)}"})
 
 with st.sidebar:
     if st.button("Clear Chat Window", use_container_width = True, type="primary"):
