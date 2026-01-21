@@ -45,18 +45,20 @@ if 'data_file' not in st.session_state:
 if 'use_vertex' not in st.session_state:
      st.session_state['use_vertex'] = False
 
-
-def get_history_json():
-    return json.dumps(
-        {
-            "model": selected_model,
-            "history": st.session_state.history_pic
-        },
-        ensure_ascii=False,
-        indent=2
-    )
-    
 # 侧边状态栏
+def get_history_json(model_name):
+    try:
+        return json.dumps(
+            {
+                "model": model_name,
+                "history": st.session_state.history_pic
+            },
+            ensure_ascii=False,
+            indent=2
+        )
+    except NameError as e:
+        return f"错误: 变量未定义 {e}"
+
 with st.sidebar:
     if st.button("Clear Chat Window", use_container_width = True, type="primary"):
         st.session_state.history_pic  = []
@@ -71,7 +73,7 @@ with st.sidebar:
     
     st.download_button(
         label="⬇️ Download Chat History (JSON)",
-        data=get_history_json(),
+        data=get_history_json(selected_model),
         file_name="chat_history.json",
         mime="application/json",
         use_container_width=True
