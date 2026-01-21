@@ -20,6 +20,16 @@ if "app_key" not in st.session_state:
     if app_key:
         st.session_state.app_key = app_key
 
+if not st.session_state.app_key:
+    # 使用 key="input_key" 避免和 session_state.app_key 冲突
+    entered_key = st.text_input("Your Gemini App Key", type='password', key="input_key")
+    if entered_key:
+        st.session_state.app_key = entered_key
+        st.rerun() # 立即刷新页面，确保后续逻辑能拿到 key
+    else:
+        st.warning("Please Put Your Gemini App Key First.")
+        st.stop() # 停止运行后续代码，直到有 Key 为止
+
 try:
     # gemini-pro-vision
     client = genai.Client(api_key = st.session_state.app_key)
