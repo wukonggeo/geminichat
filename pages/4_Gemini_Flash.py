@@ -46,6 +46,36 @@ if 'use_vertex' not in st.session_state:
      st.session_state['use_vertex'] = False
 
 # 侧边状态栏
+st.markdown("""
+<style>
+    /* 定制下载按钮的样式 */
+    .stDownloadButton button {
+        width: 100%;
+        background-color: #007bff; /* 蓝色背景 */
+        color: white !important;
+        border-radius: 8px;
+        border: none;
+        padding: 0.5rem;
+        transition: all 0.3s ease;
+        font-weight: bold;
+        border: 1px solid #007bff;
+    }
+
+    /* 鼠标悬停效果 */
+    .stDownloadButton button:hover {
+        background-color: #0056b3; /* 深蓝色 */
+        border-color: #0056b3;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transform: translateY(-1px);
+    }
+
+    /* 激活点击效果 */
+    .stDownloadButton button:active {
+        transform: translateY(1px);
+    }
+</style>
+""", unsafe_allow_html=True)
+
 def get_history_json(model_name):
     try:
         return json.dumps(
