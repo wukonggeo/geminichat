@@ -15,6 +15,13 @@ st.set_page_config(
 )
 st.title('Upload Image And Ask')
 
+model_options = {
+    'gemini-2.0-flash-exp': "Flash-2",
+    'gemini-2.5-flash-image': "Flash-2.5",
+    'gemini-3-pro-image-preview': "Pro-3-Pre",
+    }
+default_index = list(model_options.keys()).index('gemini-2.5-pro')
+
 if "app_key" not in st.session_state:
     app_key = st.text_input("Your Gemini App Key", type='password')
     if app_key:
