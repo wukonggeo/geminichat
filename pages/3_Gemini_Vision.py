@@ -20,7 +20,7 @@ model_options = {
     'gemini-2.5-flash-image': "Flash-2.5",
     'gemini-3-pro-image-preview': "Pro-3-Pre",
     }
-default_index = list(model_options.keys()).index('gemini-2.5-pro')
+default_index = list(model_options.keys()).index('gemini-2.0-flash-exp')
 
 if "app_key" not in st.session_state:
     app_key = st.text_input("Your Gemini App Key", type='password')
@@ -50,6 +50,19 @@ except AttributeError as e:
     st.warning("Please Put Your Gemini App Key First.")
 
 
+with st.sidebar:
+    if st.button("Clear Chat Window", use_container_width = True, type="primary"):
+        st.session_state.history_pic  = []
+        st.rerun()
+        
+    selected_model = st.selectbox(
+        "Select Model",
+        options=list(model_options.keys()),
+        format_func=lambda x: model_options[x],  #显示的名称
+        index=default_index
+        )
+    
+
 def convert_history_model(history_list):
     model_history = []
     if len(st.session_state.history_pic) > 0:
@@ -72,7 +85,7 @@ def show_message(prompt, image, loading_str):
     if image:
         prompt = [prompt, image]
     response_stream = client.models.generate_content_stream(
-        model="gemini-2.0-flash-exp",
+        model=selected_model,
         contents=prompt,
         config=config,
     )
