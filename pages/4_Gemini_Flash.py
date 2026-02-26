@@ -22,9 +22,9 @@ model_options = {
     'gemini-2.0-flash-exp': "Vision",
     'gemini-2.5-flash': "Flash",
     'gemini-2.5-pro': "Pro",
+    'gemini-3-pro-image-preview': "Vision-Dev",
     'gemini-3-flash-preview': "Flash-Dev",
     'gemini-3-pro-preview': "Pro-Dev",
-    'gemini-3-pro-image-preview': "Vision-Dev",
     'gemini-3.1-pro-preview': "Pro-Pre",
     }
 default_index = list(model_options.keys()).index('gemini-2.5-pro')
