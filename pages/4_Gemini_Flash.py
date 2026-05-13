@@ -144,7 +144,8 @@ try:
             client = genai.Client(api_key = app_key, vertexai=True)
     config = types.GenerateContentConfig(
       thinking_config=types.ThinkingConfig(
-        include_thoughts=True
+          thinking_level="low",
+          include_thoughts=True
       )
     )
 except AttributeError as e:
