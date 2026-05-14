@@ -144,7 +144,7 @@ try:
             client = genai.Client(api_key = app_key, vertexai=True)
     config = types.GenerateContentConfig(
       thinking_config=types.ThinkingConfig(
-          thinking_level="low",
+          # thinking_level="low",
           include_thoughts=True
       )
     )
